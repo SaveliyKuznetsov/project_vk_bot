@@ -1,0 +1,4 @@
+vk-api==11.9.7 
+DateTime==4.3
+requests==2.26.0
+bs4==0.0.1
