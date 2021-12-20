@@ -11,11 +11,7 @@ from unittest import TestCase
 class Test1(TestCase):
     def test_sh1(self):
         self.assertEqual(main1.share(120), (0, 1, 2, 0))
-        
-    def test_sh2(self):
         self.assertEqual(main1.share(674631), (674, 6, 3, 1))
-
-    def test_sh3(self):
         self.assertEqual(main1.share(452515),(452, 5, 1, 5) )
 
         
