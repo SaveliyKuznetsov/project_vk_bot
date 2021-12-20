@@ -10,7 +10,7 @@ import bs4
 TOKEN = '---'
 
 vk = vk_api.VkApi(token=TOKEN)
-longpoll = VkBotLongPoll(vk, 204241258)
+
 upload = VkUpload(vk)
 session = requests.Session()
 
@@ -327,131 +327,132 @@ global num
 def bik(chat_id, res, normal):
     pass
 
-#Пока работает бот считываем сообщения
-for event in longpoll.listen():
-    print(event.type)
-    if event.type == VkBotEventType.MESSAGE_NEW: #Если появилось сообщение - обрабатываем
-        if event.from_chat:
-            chat_id = event.chat_id
-            msg = event.object.message["text"].lower()
-            bad_words = ['лень', "тоска", "уныние", "скука"]  # слова-маркеры
-            if msg == "привет":
-                send_messages(chat_id,
-                              'Привет, чтобы узнать, что я могу пиши "команды"')
-            try:
-                dey = event.message.action['type']
-                invite_id = event.message.action['member_id']
-            except:
-                dey = ''
-                invite_id = -100
-            if dey == 'chat_invite_user':
-                send_messages(chat_id, f"Приветик, {_get_user_name(chat_id, str(invite_id))}!")
-            elif set(msg.split()) & set(bad_words):
-                send_messages(chat_id, 'Без плохих слов!')
-            elif msg.lower() == "кто я":
-                name = _get_user_name(chat_id, str(invite_id))
-                if name == '404':
-                    send_messages(chat_id, f"Я не знаю")
-                else:
-                    send_messages(chat_id, f"Ты - {name}, не забывай об этом!")
-            elif msg.lower().count("кто ид - "):
-                invite_id = msg.lower().split('кто ид - ')[1]
-                name = _get_user_name(chat_id, str(invite_id))
-                if name == '404':
-                    send_messages(chat_id, f"Я не знаю")
-                else:
-                    send_messages(chat_id, f"Это - {name}, не забывай об этом!")
-            elif msg.lower().count("добавить фразу"):
-                frazes.append(msg[15:])
-                send_messages(chat_id, f'Ваша фраза - {msg[15:]} - добавлена в список')
-            elif msg.lower() == "команды":
-                attachments = []
-                image = random.choice(image_urls)
-                photo = upload.photo_messages(photos=image)[0]
-                attachments.append('photo{}_{}'.format(photo['owner_id'], photo['id']))
-                send_messages(chat_id, koms, ','.join(attachments))
-            elif msg.lower() == "грустно":
-                send_messages(chat_id, f'Все будет окей!)')
-            elif msg.lower() == "весело":
-                send_messages(chat_id, f'Так держать! Полный вперед! На аборда-аж!')
-            elif msg.lower() == "крестики-нолики":
-                bol = 1
-                i = 1
-                send_messages(chat_id,
-                              f"Да начнется битва! Ход игрока {1}. Введите координату типа: 1 3")
-            elif bol and len(msg.lower()) == 3 and set(msg.lower()) & set('123'):
-                p = i % 2
-                if p == 0:
-                    p = 2
-                c = msg
-                bol, desk = krestnul(p, desk, c)
-                i += 1
-                if bol:
-                    if p == 2:
-                        b = 1
+if __name__ == '':
+    longpoll = VkBotLongPoll(vk, 204241258)
+    for event in longpoll.listen():
+        print(event.type)
+        if event.type == VkBotEventType.MESSAGE_NEW: #Если появилось сообщение - обрабатываем
+            if event.from_chat:
+                chat_id = event.chat_id
+                msg = event.object.message["text"].lower()
+                bad_words = ['лень', "тоска", "уныние", "скука"]  # слова-маркеры
+                if msg == "привет":
+                    send_messages(chat_id,
+                                  'Привет, чтобы узнать, что я могу пиши "команды"')
+                try:
+                    dey = event.message.action['type']
+                    invite_id = event.message.action['member_id']
+                except:
+                    dey = ''
+                    invite_id = -100
+                if dey == 'chat_invite_user':
+                    send_messages(chat_id, f"Приветик, {_get_user_name(chat_id, str(invite_id))}!")
+                elif set(msg.split()) & set(bad_words):
+                    send_messages(chat_id, 'Без плохих слов!')
+                elif msg.lower() == "кто я":
+                    name = _get_user_name(chat_id, str(invite_id))
+                    if name == '404':
+                        send_messages(chat_id, f"Я не знаю")
                     else:
-                        b = 2
-                    send_messages(chat_id, f"Ход игрока {b}")
-            elif msg.lower() == "угадайка":
-                send_messages(chat_id, f'Угадайка. Поехали. ВВедите число')
-                num = random.randint(1, 100)
-                raund = 1
-                knownumTrue = True
-            elif knownumTrue and msg.isdigit():
-                knownumTrue, raund = know_nomber(chat_id, int(msg), num, knownumTrue, raund)
-            elif msg.lower() == "прогноз":  # псевдопредсказание дня
-                attachments = []
-                image = random.choice(im_uri)
-                photo = upload.photo_messages(photos=image)[0]
-                attachments.append('photo{}_{}'.format(photo['owner_id'], photo['id']))
-                send_messages(chat_id, random.choice(futurum), ','.join(attachments))
-            elif msg.lower() == 'картинка':
-                attachments = []
-                image = random.choice(f1)
-                photo = upload.photo_messages(photos=image)[0]
-                attachments.append('photo{}_{}'.format(photo['owner_id'], photo['id']))
-                send_messages(chat_id, '', ','.join(attachments))
-            elif msg.lower() == 'фраза':
-                send_messages(chat_id, random.choice(frazes))
-            elif msg.lower() == "города":
-                raund1 = 1
-                gorodaTrue = True
-                send_messages(chat_id, f'Города. Начинайте с "Город ..."')
-                cur_towns = []
-                word_b = ''
-            elif msg.lower() == "виселица":
-                visTrue = True
-                send_messages(chat_id,
-                              f'Ваша задача ответить на загадку, угадывая слово по одной букве. '
-                              f'Если хотите закончить игру досрочно, напишите "сдаюсь". '
-                              f'У вас есть право на {MAX_WRONG} ошибок.'
-                              f' Чтобы ввести букву начните сообщение с "Буква "')
-                nu = random.randint(0, len(QUESTIONS) - 1)
-                send_messages(chat_id, QUESTIONS[nu])
-                wrong = 0
-                current_ans = ['-'] * len(ANWERS[nu])
-                send_messages(chat_id, '  '.join(current_ans))
-                send_messages(chat_id, 'Введите букву: ')
-            elif msg.lower().count("буква ") and visTrue:
-                letter = msg.lower().split("буква ")[1]
-                visTrue = gallows(chat_id, letter)
-            elif msg.lower().count("сдаюсь") and visTrue:
-                visTrue = gallows(chat_id, 'сдаюсь')
-            elif msg.lower().count("сколько дней до"):
-                t_d(chat_id, msg)
-            elif msg.lower() == "абырвалг":
-                abirTrue = True
-                send_messages(chat_id, f'Торобоан аволс мешип\n *ценок - конец')
-            elif abirTrue:
-                abirTrue = abirgame(chat_id, msg)
-            elif msg.lower() == "верю не верю":
-                tofTrue = True
-                send_messages(chat_id, f'Ваша задача угадать, правдиво ли данное высказывание')
-                number = random.randint(0, len(QUE_CARDS) - 1)
-                send_messages(chat_id, QUE_CARDS[number])
-            elif tofTrue and ((msg.lower() in ans_dict) or msg.lower() == 'хватит'):
-                tofTrue, number = true_or_false(chat_id, msg.lower(), number)
-            elif msg.lower().count('посчитай'):
+                        send_messages(chat_id, f"Ты - {name}, не забывай об этом!")
+                elif msg.lower().count("кто ид - "):
+                    invite_id = msg.lower().split('кто ид - ')[1]
+                    name = _get_user_name(chat_id, str(invite_id))
+                    if name == '404':
+                        send_messages(chat_id, f"Я не знаю")
+                    else:
+                        send_messages(chat_id, f"Это - {name}, не забывай об этом!")
+                elif msg.lower().count("добавить фразу"):
+                    frazes.append(msg[15:])
+                    send_messages(chat_id, f'Ваша фраза - {msg[15:]} - добавлена в список')
+                elif msg.lower() == "команды":
+                    attachments = []
+                    image = random.choice(image_urls)
+                    photo = upload.photo_messages(photos=image)[0]
+                    attachments.append('photo{}_{}'.format(photo['owner_id'], photo['id']))
+                    send_messages(chat_id, koms, ','.join(attachments))
+                elif msg.lower() == "грустно":
+                    send_messages(chat_id, f'Все будет окей!)')
+                elif msg.lower() == "весело":
+                    send_messages(chat_id, f'Так держать! Полный вперед! На аборда-аж!')
+                elif msg.lower() == "крестики-нолики":
+                    bol = 1
+                    i = 1
+                    send_messages(chat_id,
+                                  f"Да начнется битва! Ход игрока {1}. Введите координату типа: 1 3")
+                elif bol and len(msg.lower()) == 3 and set(msg.lower()) & set('123'):
+                    p = i % 2
+                    if p == 0:
+                        p = 2
+                    c = msg
+                    bol, desk = krestnul(p, desk, c)
+                    i += 1
+                    if bol:
+                        if p == 2:
+                            b = 1
+                        else:
+                            b = 2
+                        send_messages(chat_id, f"Ход игрока {b}")
+                elif msg.lower() == "угадайка":
+                    send_messages(chat_id, f'Угадайка. Поехали. ВВедите число')
+                    num = random.randint(1, 100)
+                    raund = 1
+                    knownumTrue = True
+                elif knownumTrue and msg.isdigit():
+                    knownumTrue, raund = know_nomber(chat_id, int(msg), num, knownumTrue, raund)
+                elif msg.lower() == "прогноз":  # псевдопредсказание дня
+                    attachments = []
+                    image = random.choice(im_uri)
+                    photo = upload.photo_messages(photos=image)[0]
+                    attachments.append('photo{}_{}'.format(photo['owner_id'], photo['id']))
+                    send_messages(chat_id, random.choice(futurum), ','.join(attachments))
+                elif msg.lower() == 'картинка':
+                    attachments = []
+                    image = random.choice(f1)
+                    photo = upload.photo_messages(photos=image)[0]
+                    attachments.append('photo{}_{}'.format(photo['owner_id'], photo['id']))
+                    send_messages(chat_id, '', ','.join(attachments))
+                elif msg.lower() == 'фраза':
+                    send_messages(chat_id, random.choice(frazes))
+                elif msg.lower() == "города":
+                    raund1 = 1
+                    gorodaTrue = True
+                    send_messages(chat_id, f'Города. Начинайте с "Город ..."')
+                    cur_towns = []
+                    word_b = ''
+                elif msg.lower() == "виселица":
+                    visTrue = True
+                    send_messages(chat_id,
+                                  f'Ваша задача ответить на загадку, угадывая слово по одной букве. '
+                                  f'Если хотите закончить игру досрочно, напишите "сдаюсь". '
+                                  f'У вас есть право на {MAX_WRONG} ошибок.'
+                                  f' Чтобы ввести букву начните сообщение с "Буква "')
+                    nu = random.randint(0, len(QUESTIONS) - 1)
+                    send_messages(chat_id, QUESTIONS[nu])
+                    wrong = 0
+                    current_ans = ['-'] * len(ANWERS[nu])
+                    send_messages(chat_id, '  '.join(current_ans))
+                    send_messages(chat_id, 'Введите букву: ')
+                elif msg.lower().count("буква ") and visTrue:
+                    letter = msg.lower().split("буква ")[1]
+                    visTrue = gallows(chat_id, letter)
+                elif msg.lower().count("сдаюсь") and visTrue:
+                    visTrue = gallows(chat_id, 'сдаюсь')
+                elif msg.lower().count("сколько дней до"):
+                    t_d(chat_id, msg)
+                elif msg.lower() == "абырвалг":
+                    abirTrue = True
+                    send_messages(chat_id, f'Торобоан аволс мешип\n *ценок - конец')
+                elif abirTrue:
+                    abirTrue = abirgame(chat_id, msg)
+                elif msg.lower() == "верю не верю":
+                    tofTrue = True
+                    send_messages(chat_id, f'Ваша задача угадать, правдиво ли данное высказывание')
+                    number = random.randint(0, len(QUE_CARDS) - 1)
+                    send_messages(chat_id, QUE_CARDS[number])
+                elif tofTrue and ((msg.lower() in ans_dict) or msg.lower() == 'хватит'):
+                    tofTrue, number = true_or_false(chat_id, msg.lower(), number)
+                elif msg.lower().count('посчитай'):
                 msg = msg.split('посчитай ')[1]
                 try:
                     st = eval(msg)
@@ -464,13 +465,13 @@ for event in longpoll.listen():
                     send_messages(chat_id, f'Я тебя не понимаю. Не забудь про ввод цифрами')
                 except NameError:
                     send_messages(chat_id, f'Я тебя не понимаю. Не забудь про ввод цифрами')
-            elif msg.lower() == "быки и коровы":
-                bikTrue = True
-                send_messages(chat_id,
-                              f'Цель игры - угадать число из 4 разных цифр по количеству общих цифр(коров) '
-                              f'и цифр, которые находятся на нужном месте(быков)')
-                send_messages(chat_id, 'Введите четырехзначное число:')
-            elif bikTrue and (len(msg) == 4 and msg.isdigit()):
-                res = share(int(msg))  # принимаем пользовательское число
-                normal = share(change(res))  # новый задуманный кортеж
-                bikTrue = bik(chat_id, res, normal)
+                elif msg.lower() == "быки и коровы":
+                    bikTrue = True
+                    send_messages(chat_id,
+                                  f'Цель игры - угадать число из 4 разных цифр по количеству общих цифр(коров) '
+                                  f'и цифр, которые находятся на нужном месте(быков)')
+                    send_messages(chat_id, 'Введите четырехзначное число:')
+                elif bikTrue and (len(msg) == 4 and msg.isdigit()):
+                    res = share(int(msg))  # принимаем пользовательское число
+                    normal = share(change(res))  # новый задуманный кортеж
+                    bikTrue = bik(chat_id, res, normal)
